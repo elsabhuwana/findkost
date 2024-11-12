@@ -6,7 +6,7 @@
     <meta name="keywords" content="Ogani, unica, creative, html" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Ogani | Template</title>
+    <title>FindKost</title>
 
     <!-- Google Font -->
     <link
@@ -35,7 +35,7 @@
     <div class="humberger__menu__overlay"></div>
     <div class="humberger__menu__wrapper">
       <div class="humberger__menu__logo">
-        <a href="#"><img src="{{ asset('frontend/img/logo.png') }}" alt="" /></a>
+        <a href="#"><img src="{{ asset('frontend/img/logo2.png') }}" alt="" /></a>
       </div>
       <div class="humberger__menu__cart">
         <ul>
@@ -80,7 +80,7 @@
       <nav class="humberger__menu__nav mobile-menu">
         <ul>
           <li class="active"><a href="/">Home</a></li>
-          <li><a href="{{ route('shop.index') }}">Shop</a></li>
+          <li><a href="{{ route('shop.index') }}"></a></li>
           <li>
             <a href="#">Categories</a>
             <ul class="header__menu__dropdown">
@@ -89,7 +89,7 @@
               @endforeach
             </ul>
           </li>
-          <li><a href="#">Contact</a></li>
+          {{-- <li><a href="#">Contact</a></li> --}}
         </ul>
       </nav>
       <div id="mobile-menu-wrap"></div>
@@ -101,8 +101,8 @@
       </div>
       <div class="humberger__menu__contact">
         <ul>
-          <li><i class="fa fa-envelope"></i> hello@colorlib.com</li>
-          <li>Free Shipping for all Order of $99</li>
+          <li><i class="fa fa-envelope"></i> FindKost@gmail.com</li>
+          <li>Temukan Kenyamanan di Perantauan</li>
         </ul>
       </div>
     </div>
@@ -116,8 +116,8 @@
             <div class="col-lg-6 col-md-6">
               <div class="header__top__left">
                 <ul>
-                  <li><i class="fa fa-envelope"></i> hello@colorlib.com</li>
-                  <li>Free Shipping for all Order of $99</li>
+                  <li><i class="fa fa-envelope"></i>  FindKost@gmail.com</li>
+                  <li>Temukan Kenyamanan di Perantauan</li>
                 </ul>
               </div>
             </div>
@@ -164,14 +164,14 @@
         <div class="row">
           <div class="col-lg-3">
             <div class="header__logo">
-              <a href="/"><img src="{{ asset('frontend/img/logo.jpg') }}" alt="" /></a>
+              <a href="/"><img src="{{ asset('frontend/img/logo2.png') }}" alt="" /></a>
             </div>
           </div>
           <div class="col-lg-6">
             <nav class="header__menu">
               <ul>
                 <li class="active"><a href="/">Home</a></li>
-                <li><a href="{{ route('shop.index') }}">Shop</a></li>
+                <li><a href="{{ route('shop.index') }}"></a></li>
                 <li>
                   <a href="#">Categories</a>
                   <ul class="header__menu__dropdown">
@@ -180,7 +180,7 @@
                     @endforeach
                   </ul>
                 </li>
-                <li><a href="#">Contact</a></li>
+                <li><a href="#"></a></li>
               </ul>
             </nav>
           </div>
@@ -244,12 +244,12 @@
           <div class="col-lg-3 col-md-6 col-sm-6">
             <div class="footer__about">
               <div class="footer__about__logo">
-                <a href="./index.html"><img src="{{ asset('frontend/img/logo.jpg') }}" alt="" /></a>
+                <a href="./index.html"><img src="{{ asset('frontend/img/logo2.png') }}" alt="" /></a>
               </div>
               <ul>
-                <li>Address: 60-49 Road 11378 New York</li>
-                <li>Phone: +65 11.188.888</li>
-                <li>Email: hello@colorlib.com</li>
+                <li>Address: Gang Arum Dalu, Madiun, Jawa Timur, Indonesia</li>
+                <li>Phone: +622233070</li>
+                <li>Email: FindKost@gmail.com</li>
               </ul>
             </div>
           </div>
@@ -257,10 +257,10 @@
             <div class="footer__widget">
               <h6>Useful Links</h6>
               <ul>
-                <li><a href="#">About Us</a></li>
-                <li><a href="#">About Our Shop</a></li>
-                <li><a href="#">Secure Shopping</a></li>
-                <li><a href="#">Delivery infomation</a></li>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Shop</a></li>
+                <li><a href="#">Categori</a></li>
+                {{-- <li><a href="#">Delivery infomation</a></li>
                 <li><a href="#">Privacy Policy</a></li>
                 <li><a href="#">Our Sitemap</a></li>
               </ul>
@@ -270,13 +270,13 @@
                 <li><a href="#">Projects</a></li>
                 <li><a href="#">Contact</a></li>
                 <li><a href="#">Innovation</a></li>
-                <li><a href="#">Testimonials</a></li>
+                <li><a href="#">Testimonials</a></li> --}}
               </ul>
             </div>
           </div>
           <div class="col-lg-4 col-md-12">
             <div class="footer__widget">
-              <h6>Join Our Newsletter Now</h6>
+              <h6>Find your comffy</h6>
               <p>
                 Get E-mail updates about our latest shop and special offers.
               </p>
@@ -305,7 +305,7 @@
                   </script>
                   All rights reserved | This template is made with
                   <i class="fa fa-heart" aria-hidden="true"></i> by
-                  <a href="https://colorlib.com" target="_blank">Colorlib</a>
+                  <a href="https://colorlib.com" target="_blank">FindKost</a>
                   <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
                 </p>
               </div>
