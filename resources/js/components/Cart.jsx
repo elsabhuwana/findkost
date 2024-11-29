@@ -6,6 +6,7 @@ const Cart = () => {
     const [carts, setCarts] = useState([]);
     const [total, setTotal] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [csrfToken, setCsrfToken] = useState(null);
 
     useEffect(() => {
         axios.get("carts").then((res) => {
@@ -15,6 +16,9 @@ const Cart = () => {
             }
             setLoading(false);
         });
+
+        const getToken = document.querySelector('meta[name="csrf-token"]') ?? null;
+        setCsrfToken(getToken?.getAttribute('content'));
     }, []);
 
     const updateCart = (quantity, cartId) => {
@@ -158,7 +162,7 @@ const Cart = () => {
                         </a>
                     </div>
                 </div>
-                <div className="col-lg-6">
+                <div className="col-lg-6 d-none">
                     <div className="shoping__continue">
                         <div className="shoping__discount">
                             <h5>Discount Codes</h5>
@@ -185,9 +189,14 @@ const Cart = () => {
                                 Total <span>${total}</span>
                             </li>
                         </ul>
-                        <a href="/order/checkout" className="primary-btn">
-                            PROCEED TO CHECKOUT
-                        </a>
+                        <form action="/checkout" method="POST">
+                            <input type="hidden" value={csrfToken} name="_token" />
+                            <input type="hidden" name="total" value={total} />
+                            <input type="hidden" name="customer_name" value="John Doe" />
+                            <input type="hidden" name="customer_email" value="johndoe@example.com" />
+                            <input type="hidden" name="customer_phone" value="08123456789" />
+                            <button type="submit" className="primary-btn">PROCEED TO CHOUT</button>
+                        </form>
                     </div>
                 </div>
             </div>

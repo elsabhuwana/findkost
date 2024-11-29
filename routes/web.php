@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CheckoutController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -37,10 +38,15 @@ Route::post('api/checkout', [\App\Http\Controllers\OrderController::class, 'chec
 Route::get('api/users', [\App\Http\Controllers\UserController::class, 'index']);
 // ==========
 
+Route::post('/checkout', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
+
+// Rute untuk halaman sukses, pending, atau gagal pembayaran
+Route::get('/payment-success', [CheckoutController::class, 'paymentSuccess'])->name('payment.success');
+Route::get('/payment-pending', [CheckoutController::class, 'paymentPending'])->name('payment.pending');
+Route::get('/payment-failed', [CheckoutController::class, 'paymentFailed'])->name('payment.failed');
 
 Route::group(['middleware' => 'auth'], function() {
-    
-    Route::get('/order/checkout', [\App\Http\Controllers\OrderController::class, 'process'])->name('checkout.process');
+    Route::post('/checkout', [CheckoutController::class, 'index'])->name('checkout.process');
     Route::resource('/cart', \App\Http\Controllers\CartController::class)->except(['store', 'show']);
 
     Route::group(['middleware' => ['isAdmin'],'prefix' => 'admin', 'as' => 'admin.'], function() {
@@ -60,6 +66,6 @@ Route::group(['middleware' => 'auth'], function() {
 });
 
 
-Auth::routes();
+
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

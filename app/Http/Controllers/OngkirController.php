@@ -3,38 +3,39 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Darryldecode\Cart\Facades\CartFacade as Cart;
 
 class OngkirController extends Controller
 {
-    public function cities(Request $request)
+	public function cities(Request $request)
 	{
 		$cities = $this->getCities($request->query('provinceId'));
 		return response()->json([
-                'status' => 200,
-                'cities' => $cities
-            ]);
-    }
-    
-    public function shippingCost(Request $request)
-	{
-		$items = \Cart::getContent();
+			'status' => 200,
+			'cities' => $cities
+		]);
+	}
 
-        $totalWeight = 0;
+	public function shippingCost(Request $request)
+	{
+		$items = Cart::getContent();
+
+		$totalWeight = 0;
 		foreach ($items as $item) {
 			$totalWeight += ($item->quantity * $item->associatedModel->weight);
 		}
 
-        $destination = $request->query('city');
+		$destination = $request->query('city');
 		return $this->getShippingCost($destination, $totalWeight);
-    }
+	}
 
 	public function setShipping(Request $request)
 	{
-		\Cart::removeConditionsByType('shipping');
+		Cart::removeConditionsByType('shipping');
 
-		$items = \Cart::getContent();
+		$items = Cart::getContent();
 
-        $totalWeight = 0;
+		$totalWeight = 0;
 		foreach ($items as $item) {
 			$totalWeight += ($item->quantity * $item->associatedModel->weight);
 		}
@@ -63,7 +64,7 @@ class OngkirController extends Controller
 
 			$this->addShippingCostToCart($selectedShipping['service'], $selectedShipping['cost']);
 
-			$data['total'] = number_format(\Cart::getTotal());
+			$data['total'] = number_format(Cart::getTotal());
 		} else {
 			$status = 400;
 			$message = 'Failed to set shipping cost';
@@ -88,10 +89,10 @@ class OngkirController extends Controller
 				'name' => $serviceName,
 				'type' => 'shipping',
 				'target' => 'total',
-				'value' => '+'. $cost,
+				'value' => '+' . $cost,
 			]
 		);
 
-		\Cart::condition($condition);
+		Cart::condition($condition);
 	}
 }
