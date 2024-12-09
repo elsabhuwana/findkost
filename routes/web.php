@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\CheckoutController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -65,7 +67,10 @@ Route::group(['middleware' => 'auth'], function() {
     });
 });
 
-
-
+Route::get('/login', [\App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'login']);
+// Tambahkan route di routes/web.php
+Route::get('check-transaction-status/{orderId}', [CheckoutController::class, 'checkTransactionStatus']);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Auth::routes();

@@ -5,13 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Darryldecode\Cart\Facades\CartFacade as Cart;
 
 class ShopController extends Controller
 {
     public function index()
     {
-        $cartTotal = \Cart::getTotal();
-        $cartCount = \Cart::getContent()->count();
+        $cartTotal = Cart::getTotal();
+        $cartCount = Cart::getContent()->count();
 
         return view('frontend.shop.index', compact('cartTotal', 'cartCount'));
     }

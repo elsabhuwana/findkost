@@ -5,12 +5,14 @@ namespace App\Models;
 use App\Helpers\General;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\DB;
 
 class Order extends Model
 {
     use HasFactory;
 
     protected $guarded = [];
+	protected $table = 'orders';
 
     public const ORDERCODE = 'INV';
 
@@ -42,7 +44,7 @@ class Order extends Model
 	{
 		$dateCode = self::ORDERCODE . '/' . date('Ymd') . '/' . General::integerToRoman(date('m')). '/' . General::integerToRoman(date('d')). '/';
 
-		$lastOrder = self::select([\DB::raw('MAX(orders.code) AS last_code')])
+		$lastOrder = self::select([DB::raw('MAX(orders.code) AS last_code')])
 			->where('code', 'like', $dateCode . '%')
 			->first();
 
@@ -57,8 +59,8 @@ class Order extends Model
 		}
 
 		if (self::_isOrderCodeExists($orderCode)) {
-			return generateOrderCode();
-		}
+			return self::generateCode();  // Gunakan self::generateCode() untuk memanggil fungsi yang sama
+		}		
 
 		return $orderCode;
     }
@@ -108,3 +110,4 @@ class Order extends Model
 		return $this->status == self::CANCELLED ;
 	}
 }
+                                                        

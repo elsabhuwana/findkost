@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Darryldecode\Cart\Facades\CartFacade as Cart;
 
 class ProductController extends Controller
 {
     public function show(Request $request, Product $product)
     {
-        $cartTotal = \Cart::getTotal();
-        $cartCount = \Cart::getContent()->count();
+        $cartTotal = Cart::getTotal();
+        $cartCount = Cart::getContent()->count();
 
         $related_products = Product::whereHas('category', function ($query) use ($product) {
             $query->whereId($product->category_id);

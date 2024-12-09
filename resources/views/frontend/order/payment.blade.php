@@ -6,15 +6,12 @@
     <title>Payment with Midtrans</title>
     <script 
         src="https://app.midtrans.com/snap/snap.js" 
-        data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}">
+        data-client-key="{{ env('SB-Mid-client-pt39kw16xR1lWMtl') }}">
     </script>
 </head>
 <body>
     <div style="text-align: center; margin-top: 50px;">
         <h1>Complete Your Payment</h1>
-        {{-- <p>Order ID: <strong>{{ $orderId }}</strong></p> --}}
-        {{-- <p>Total Amount: <strong>Rp {{ number_format($total, 2, ',', '.') }}</strong></p> --}}
-
         <button id="pay-button" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">Pay Now</button>
     </div>
 

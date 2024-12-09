@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Payment extends Model
 {
@@ -52,7 +53,7 @@ class Payment extends Model
 	{
 		$dateCode = self::PAYMENTCODE . '/' . date('Ymd') . '/' . self::integerToRoman(date('m')). '/' . self::integerToRoman(date('d')). '/';
 
-		$lastOrder = self::select([\DB::raw('MAX(payments.number) AS last_code')])
+		$lastOrder = self::select([DB::raw('MAX(payments.number) AS last_code')])
 			->where('number', 'like', $dateCode . '%')
 			->first();
 
@@ -67,8 +68,8 @@ class Payment extends Model
 		}
 
 		if (self::_isOrderCodeExists($orderCode)) {
-			return generateOrderCode();
-		}
+			return self::generateCode();  // Gunakan self::generateCode() untuk memanggil fungsi yang sama
+		}		
 
 		return $orderCode;
 	}

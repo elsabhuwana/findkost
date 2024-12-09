@@ -29,13 +29,7 @@
   </head>
 
   <body>
-
-    <!-- Humberger Begin -->
     <div class="humberger__menu__overlay"></div>
-
-    <!-- Humberger End -->
-
-    <!-- Header Section Begin -->
     <header class="header">
       <div class="container">
         <div class="row justify-content-center">
@@ -47,7 +41,6 @@
         </div>
       </div>
     </header>
-    <!-- Header Section End -->
 
     @yield('content')
 
@@ -74,17 +67,6 @@
                 <li><a href="#">Home</a></li>
                 <li><a href="#">Shop</a></li>
                 <li><a href="#">Categori</a></li>
-                {{-- <li><a href="#">Delivery infomation</a></li>
-                <li><a href="#">Privacy Policy</a></li>
-                <li><a href="#">Our Sitemap</a></li> --}}
-              </ul>
-              <ul>
-                {{-- <li><a href="#">Who We Are</a></li>
-                <li><a href="#">Our Services</a></li>
-                <li><a href="#">Projects</a></li>
-                <li><a href="#">Contact</a></li>
-                <li><a href="#">Innovation</a></li>
-                <li><a href="#">Testimonials</a></li> --}}
               </ul>
             </div>
           </div>

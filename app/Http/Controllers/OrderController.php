@@ -4,209 +4,122 @@ namespace App\Http\Controllers;
 
 use Exception;
 use App\Models\Order;
-use App\Models\Payment;
-use App\Models\Product;
-use App\Models\Shipment;
-use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Midtrans\Snap;
+use Midtrans\Notification;
+use Illuminate\Support\Facades\Log;
+use Darryldecode\Cart\Facades\CartFacade as Cart;
+use Midtrans\Transaction;
 
 class OrderController extends Controller
 {
-	public function process()
-	{
+    public function process()
+    {
         return view('frontend.order.checkout');
     }
 
-    private function getSelectedShipping($destination, $totalWeight, $shippingService)
-	{
-		$shippingOptions = $this->getShippingCost($destination, $totalWeight);
+    public function checkout(Request $request)
+{
+    $params = $request->except('_token');
+    $items = Cart::getContent();
+    
+    $totalWeight = 0;
+    foreach ($items as $item) {
+        $totalWeight += ($item->quantity * $item->associatedModel->weight);
+    }
 
-		$selectedShipping = null;
-		if ($shippingOptions['results']) {
-			foreach ($shippingOptions['results'] as $shippingOption) {
-				if (str_replace(' ', '', $shippingOption['service']) == $shippingService) {
-					$selectedShipping = $shippingOption;
-					break;
-				}
-			}
-		}
+    $selectedShipping = $this->getSelectedShipping($params['city'], $totalWeight, $params['shippingService']);
+    
+    $baseTotalPrice = Cart::getSubTotal();
+    $shippingCost = $selectedShipping['cost'];
+    $grandTotal = $baseTotalPrice + $shippingCost;
 
-		return $selectedShipping;
-	}
+    $orderCode = Order::generateCode();  // Generate order code
+    $userProfile = [
+        'username' => $params['fullName'],
+        'address' => $params['address'],
+        'address2' => $params['address2'],
+        'province_id' => $params['province'],
+        'city_id' => $params['city'],
+        'postcode' => $params['postcode'],
+        'phone' => $params['phone'],
+        'email' => $params['email'],
+    ];
 
-    public function checkout(Request $request){
-        $params = $request->except('_token');
+    // Create payment gateway transaction details
+    $transactionDetails = [
+        'order_id' => $orderCode,
+        'gross_amount' => $grandTotal,
+        'customer_details' => [
+            'first_name' => $params['fullName'],
+            'email' => $params['email'],
+            'phone' => $params['phone'],
+        ]
+    ];
 
-		$order = \DB::transaction(function() use ($params) {
-			$destination = $params['city'];
-			$items = \Cart::getContent();
+    try {
+        // Proceed with payment gateway (Midtrans in this case)
+        $snap = Snap::createTransaction($transactionDetails);
+        
+        // Process payment token and redirect user to payment page
+        $paymentToken = $snap->token;
+        $paymentUrl = $snap->redirect_url;
+        
+        // Log transaction token and ID for debugging purposes
+        Log::info('Snap Token: ' . $paymentToken);
+        
+        // Redirect to payment page
+        return redirect($paymentUrl);  // Redirect to payment page
+    } catch (Exception $e) {
+        return redirect()->back()->with('error', 'Payment processing failed: ' . $e->getMessage());
+    }
+}
 
-			$totalWeight = 0;
-			foreach ($items as $item) {
-				$totalWeight += ($item->quantity * $item->associatedModel->weight);
-			}
+    public function paymentCallback(Request $request)
+    {
+        $notif = new Notification();
 
-			$selectedShipping = $this->getSelectedShipping($destination,$totalWeight, $params['shippingService']);
-			
-			$baseTotalPrice = \Cart::getSubTotal();
-			$shippingCost = $selectedShipping['cost'];
-			$discountAmount = 0;
-			$discountPercent = 0;
-			$grandTotal = $baseTotalPrice - $discountAmount;
-	
-			$orderDate = date('Y-m-d H:i:s');
-			$paymentDue = (new \DateTime($orderDate))->modify('+3 day')->format('Y-m-d H:i:s');
+        // Get order ID from Midtrans notification
+        $orderCode = $notif->order_id;
+        Log::info('Order ID dari Midtrans:', ['order_id' => $orderCode]);
 
-			$user_profile = [
-				'username' => $params['fullName'],
-				'address' => $params['address'],
-				'address2' => $params['address2'],
-				'province_id' => $params['province'],
-				'city_id' => $params['city'],
-				'postcode' => $params['postcode'],
-				'phone' => $params['phone'],
-				'email' => $params['email'],
-			];
+        // Check if the order exists in database
+        $order = Order::where('code', $orderCode)->first();
 
-			auth()->user()->update($user_profile);
+        if (!$order) {
+            Log::error('Order tidak ditemukan di database:', ['order_code' => $orderCode]);
+            return response('Order not found', 404);  // Mengembalikan response error jika order tidak ditemukan
+        }
 
-			$orderParams = [
-				'user_id' => auth()->id(),
-				'code' => Order::generateCode(),
-				'status' => Order::CREATED,
-				'order_date' => $orderDate,
-				'payment_due' => $paymentDue,
-				'payment_status' => Order::UNPAID,
-				'base_total_price' => $baseTotalPrice,
-				'discount_amount' => $discountAmount,
-				'discount_percent' => $discountPercent,
-				'shipping_cost' => $shippingCost,
-				'grand_total' => $grandTotal,
-				'customer_first_name' => $params['fullName'],
-				'customer_address' => $params['address'],
-				'customer_address2' => $params['address2'],
-				'customer_phone' => $params['phone'],
-				'customer_email' => $params['email'],
-				'customer_city_id' => $params['city'],
-				'customer_province_id' => $params['province'],
-				'customer_postcode' => $params['postcode'],
-				'notes' => $params['notes'],
-				'shipping_courier' => $selectedShipping['courier'],
-				'shipping_service_name' => $selectedShipping['service'],
-			];
+        // Get transaction status from Midtrans
+        $status = $notif->transaction_status;
+        Log::info('Status transaksi dari Midtrans:', ['status' => $status]);
 
-			$order = Order::create($orderParams);
+        // Update order status based on the transaction status
+        switch ($status) {
+            case 'capture':
+                $order->status = 'paid';
+                break;
+            case 'pending':
+                $order->status = 'pending';
+                break;
+            case 'deny':
+                $order->status = 'failed';
+                break;
+            case 'cancel':
+                $order->status = 'canceled';
+                break;
+            default:
+                $order->status = 'unknown';
+        }
 
-			$cartItems = \Cart::getContent();
+        $order->save();
 
-			if ($order && $cartItems) {
-				foreach ($cartItems as $item) {
-					$itemDiscountAmount = 0;
-					$itemDiscountPercent = 0;
-					$itemBaseTotal = $item->quantity * $item->price;
-					$itemSubTotal = $itemBaseTotal - $itemDiscountAmount;
+        // Redirect user based on payment status
+        if ($order->status == 'paid') {
+            return redirect()->route('order.success', ['order_id' => $order->id]);
+        }
 
-					$product = $item->associatedModel;
-
-					$orderItemParams = [
-						'order_id' => $order->id,
-						'product_id' => $item->associatedModel->id,
-						'qty' => $item->quantity,
-						'base_price' => $item->price,
-						'base_total' => $itemBaseTotal,
-						'discount_amount' => $itemDiscountAmount,
-						'discount_percent' => $itemDiscountPercent,
-						'sub_total' => $itemSubTotal,
-						'name' => $item->name,
-						'weight' => $item->associatedModel->weight,
-					];
-
-					$orderItem = OrderItem::create($orderItemParams);
-					
-					if ($orderItem) {
-						$product = Product::findOrFail($product->id);
-						$product->quantity -= $item->quantity;
-						$product->save();
-					}
-				}
-			}
-
-			$shippingFirstName = $params['fullName'];
-			$shippingAddress1 = $params['address'];
-			$shippingAddress2 = $params['address2'];
-			$shippingPhone = $params['phone'];
-			$shippingEmail = $params['email'];
-			$shippingCityId = $params['city'];
-			$shippingProvinceId = $params['province'];
-			$shippingPostcode = $params['postcode'];
-
-			$shipmentParams = [
-				'user_id' => auth()->id(),
-				'order_id' => $order->id,
-				'status' => Shipment::PENDING,
-				'total_qty' => \Cart::getTotalQuantity(),
-				'total_weight' => $totalWeight,
-				'first_name' => $shippingFirstName,
-				'address1' => $shippingAddress1,
-				'address2' => $shippingAddress2,
-				'phone' => $shippingPhone,
-				'email' => $shippingEmail,
-				'city_id' => $shippingCityId,
-				'province_id' => $shippingProvinceId,
-				'postcode' => $shippingPostcode,
-			];
-			Shipment::create($shipmentParams);
-
-			return $order;
-
-		});
-
-		if (!isset($order)) {
-			return redirect()->back()->with([
-				'message' => 'something went wrong !',
-				'alert-type' => 'danger'
-			]);
-			return redirect()->route('checkout.received', $order->id);
-		}
-
-		\Cart::clear();
-		\Cart::clearCartConditions();
-
-		$this->initPaymentGateway();
-
-		$customerDetails = [
-			'first_name' => $order->customer_first_name,
-			'email' => $order->customer_email,
-			'phone' => $order->customer_phone,
-		];
-
-		$transaction_details = [
-			'enable_payments' => Payment::PAYMENT_CHANNELS,
-			'transaction_details' => [
-				'order_id' => $order->code,
-				'gross_amount' => $order->grand_total,
-			],
-			'customer_details' => $customerDetails,
-			'expiry' => [
-				'start_time' => date('Y-m-d H:i:s T'),
-				'unit' => Payment::EXPIRY_UNIT,
-				'duration' => Payment::EXPIRY_DURATION,
-			]
-		];
-
-		try{
-			$snap = Snap::createTransaction($transaction_details);
-	
-			$order->payment_token = $snap->token;
-			$order->payment_url = $snap->redirect_url;
-			$order->save();
-
-			return $order->payment_url;
-		}
-		catch(Exception $e) {
-			echo $e->getMessage();
-		}
-
-	}
+        return redirect()->route('order.failed');
+    }
 }

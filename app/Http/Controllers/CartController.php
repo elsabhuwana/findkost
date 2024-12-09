@@ -4,137 +4,127 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Darryldecode\Cart\Facades\CartFacade as Cart;
+
 
 class CartController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display the cart contents.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        $carts = \Cart::getContent();
+        $carts = Cart::getContent();
 
         return view('frontend.cart.index', compact('carts'));
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * Add an item to the cart.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request,$sessionKey = null)
+    public function store(Request $request)
     {
-        $product = Product::findOrFail($request->productId);
+        $validated = $request->validate([
+            'productId' => 'required|exists:products,id',
+            'quantity' => 'required|integer|min:1',
+        ]);
 
-		$item = [
-			'id' => md5($product->id),
-			'name' => $product->name,
-			'price' => $product->price,
-			'quantity' => isset($request->quantity) ? $request->quantity : 1,
-			'associatedModel' => $product,
-		];
+        $product = Product::findOrFail($validated['productId']);
 
-        if ($sessionKey) {
-            \Cart::add($item);
-            return response()->json([
-                'status' => 200,
-                'message' => 'Successfully Added to Cart !',
-            ]);
-        }else {
-            $carts = \Cart::add($item);
-            return response()->json([
-                'status' => 200,
-                'message' => 'Successfully Added to Cart !',
-            ]);
-        }
-        
-		
-    }
+        $item = [
+            'id' => md5($product->id),
+            'name' => $product->name,
+            'price' => $product->price,
+            'quantity' => $validated['quantity'],
+            'associatedModel' => $product,
+        ];
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function showCart(Request $request)
-    {
-        $carts = \Cart::getContent();
-        $cart_total = \Cart::getTotal();
+        Cart::add($item);
+
+        Log::info('Item added to cart', ['item' => $item]);
 
         return response()->json([
             'status' => 200,
-            'carts' => $carts,
-            'cart_total' => $cart_total,
+            'message' => 'Item successfully added to cart!',
         ]);
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Get the cart contents and total.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function edit($id)
+    public function showCart()
     {
-        //
+        $carts = Cart::getContent();
+        $cartTotal = Cart::getTotal();
+
+        Log::info('Cart contents fetched', ['carts' => $carts, 'total' => $cartTotal]);
+
+        return response()->json([
+            'status' => 200,
+            'carts' => $carts,
+            'cart_total' => $cartTotal,
+        ]);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update an item's quantity in the cart.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  string  $cartId
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, $cart_id)
+    public function update(Request $request, $cartId)
     {
-        $cartUpdate = \Cart::update($cart_id,[
+        $validated = $request->validate([
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        Cart::update($cartId, [
             'quantity' => [
                 'relative' => false,
-                'value' => $request->quantity,
+                'value' => $validated['quantity'],
             ],
         ]);
 
-        $carts = \Cart::getContent();
-        $cart_total = \Cart::getTotal();
+        $carts = Cart::getContent();
+        $cartTotal = Cart::getTotal();
+
+        Log::info('Cart item updated', ['cart_id' => $cartId, 'quantity' => $validated['quantity']]);
 
         return response()->json([
             'status' => 200,
-            'message' => 'Successfully updated Cart !',
+            'message' => 'Cart item updated successfully!',
             'carts' => $carts,
-            'cart_total' => $cart_total,
+            'cart_total' => $cartTotal,
         ]);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove an item from the cart.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  string  $cartId
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy($cart_id)
+    public function destroy($cartId)
     {
-        \Cart::remove($cart_id);
-        $cart_total = \Cart::getTotal();
+        Cart::remove($cartId);
+
+        $cartTotal = Cart::getTotal();
+
+        Log::info('Cart item removed', ['cart_id' => $cartId]);
 
         return response()->json([
             'status' => 200,
-            'message' => 'Successfully deleted Cart !',
-            'cart_total' => $cart_total,
+            'message' => 'Cart item removed successfully!',
+            'cart_total' => $cartTotal,
         ]);
     }
 }

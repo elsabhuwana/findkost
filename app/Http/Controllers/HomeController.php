@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use Darryldecode\Cart\Facades\CartFacade as Cart;
+
 
 class HomeController extends Controller
 {
@@ -10,8 +12,8 @@ class HomeController extends Controller
     {
         $products = Product::with('category')->get(['id','name', 'price','slug']);
         
-        $cartTotal = \Cart::getTotal();
-        $cartCount = \Cart::getContent()->count();
+        $cartTotal = Cart::getTotal();
+        $cartCount = Cart::getContent()->count();
 
         return view('frontend.homepage', compact('products', 'cartTotal', 'cartCount'));
     }
