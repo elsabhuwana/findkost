@@ -3,7 +3,7 @@
 @section('content')
         <div class="card">
             <div class="card-header">
-                <h3>product List
+                <h3>Room List
                     <a href="{{ route('admin.products.create') }}" class="btn btn-primary float-right">
                         Create
                     </a>
@@ -37,7 +37,7 @@
                                             <span class="badge badge-primary"> {{ $tag->name  }}</span>
                                         @endforeach
                                     </td>
-                                    <td>${{ number_format($product->price, 2) }}</td>
+                                    <td>Rp{{ number_format($product->price, 2) }}</td>
                                     <td>{{ $product->quantity }}</td>
                                     <td>
                                         @if(count($product->gallery)  > 0)

@@ -9,14 +9,12 @@
                   <span>KOST PUTRI</span>
                   <h2>FindKost</h2>
                   <p>Temukan Kost Idamanmu</p>
-                  <a href="#" class="primary-btn">FIND NOW</a>
+                  <a href="{{ route('shop.index') }}" class="primary-btn">FIND NOW</a>
               </div>
           </div>
       </div>
     </section>
-      <!-- Breadcrumb Section End -->
 
-    <!-- Categories Section Begin -->
     <section class="categories">
       <div class="container">
         <div class="row">
@@ -35,15 +33,13 @@
         </div>
       </div>
     </section>
-    <!-- Categories Section End -->
-
-    <!-- Featured Section Begin -->
+  
     <section class="featured spad">
       <div class="container">
         <div class="row">
           <div class="col-lg-12">
             <div class="section-title">
-              <h2>Featured Product</h2>
+              <h2>Rooms Available</h2>
             </div>
           </div>
         </div>
@@ -51,9 +47,7 @@
         </div>
       </div>
     </section>
-    <!-- Featured Section End -->
 
-    <!-- Banner Begin -->
     <div class="banner">
       <div class="container">
         <div class="row">

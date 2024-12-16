@@ -40,13 +40,10 @@
       <div class="humberger__menu__cart">
         <ul>
           <li>
-            <a href="#"><i class="fa fa-heart"></i> <span>1</span></a>
-          </li>
-          <li>
             <a href="#"><i class="fa fa-shopping-bag"></i> <span>{{ $cartCount }}</span></a>
           </li>
         </ul>
-        <div class="header__cart__price">item: <span>${{ $cartTotal }}</span></div>
+        <div class="header__cart__price">item: <span>Rp{{ $cartTotal }}</span></div>
       </div>
       <div class="humberger__menu__widget">
           @guest
@@ -187,16 +184,14 @@
           <div class="col-lg-3">
             <div class="header__cart">
               <ul>
-                <li>
-                  <a href="#"><i class="fa fa-heart"></i> <span>1</span></a>
-                </li>
+                
                 <li>
                   <a href="{{ route('cart.index') }}"
                     ><i class="fa fa-shopping-bag"></i> <span>{{ $cartCount }}</span></a
                   >
                 </li>
               </ul>
-              <div class="header__cart__price">item: <span>${{ $cartTotal }}</span></div>
+              <div class="header__cart__price">item: <span>Rp{{ $cartTotal }}</span></div>
             </div>
           </div>
         </div>
@@ -207,33 +202,7 @@
     </header>
     <!-- Header Section End -->
 
-    <!-- Hero Section Begin -->
-    <section class="hero">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-12">
-            <div class="hero__search">
-              <div class="hero__search__form">
-                <form action="#">
-                  <input type="text" placeholder="What do yo u need?" />
-                  <button type="submit" class="site-btn">SEARCH</button>
-                </form>
-              </div>
-              <div class="hero__search__phone">
-                <div class="hero__search__phone__icon">
-                  <i class="fa fa-phone"></i>
-                </div>
-                <div class="hero__search__phone__text">
-                  <h5>+65 11.188.888</h5>
-                  <span>support 24/7 time</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <!-- Hero Section End -->
+
 
     @yield('content')
 
@@ -260,17 +229,6 @@
                 <li><a href="#">Home</a></li>
                 <li><a href="#">Shop</a></li>
                 <li><a href="#">Categori</a></li>
-                {{-- <li><a href="#">Delivery infomation</a></li>
-                <li><a href="#">Privacy Policy</a></li>
-                <li><a href="#">Our Sitemap</a></li>
-              </ul>
-              <ul>
-                <li><a href="#">Who We Are</a></li>
-                <li><a href="#">Our Services</a></li>
-                <li><a href="#">Projects</a></li>
-                <li><a href="#">Contact</a></li>
-                <li><a href="#">Innovation</a></li>
-                <li><a href="#">Testimonials</a></li> --}}
               </ul>
             </div>
           </div>

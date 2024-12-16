@@ -87,16 +87,16 @@ const ProductDetail = () => {
                         <div className="col-lg-6 col-md-6">
                             <div className="product__details__text">
                                 <h3>{product.name}</h3>
-                                <div className="product__details__rating">
+                                {/* <div className="product__details__rating">
                                     <i className="fa fa-star"></i>
                                     <i className="fa fa-star"></i>
                                     <i className="fa fa-star"></i>
                                     <i className="fa fa-star"></i>
                                     <i className="fa fa-star-half-o"></i>
                                     <span>(18 reviews)</span>
-                                </div>
+                                </div> */}
                                 <div className="product__details__price">
-                                    ${product.price}
+                                    Rp{product.price}
                                 </div>
                                 <p>{product.description}</p>
                                 <form
@@ -147,7 +147,7 @@ const ProductDetail = () => {
                                 <ul>
                                     <li>
                                         <b>Weight</b>{" "}
-                                        <span>{product.weight} gram</span>
+                                        <span>{product.weight}</span>
                                     </li>
                                     <li>
                                         <b>Share on</b>
@@ -183,17 +183,7 @@ const ProductDetail = () => {
                                             Description
                                         </a>
                                     </li>
-                                    <li className="nav-item">
-                                        <a
-                                            className="nav-link"
-                                            data-toggle="tab"
-                                            href="#tabs-3"
-                                            role="tab"
-                                            aria-selected="false"
-                                        >
-                                            Reviews <span>(1)</span>
-                                        </a>
-                                    </li>
+                            
                                 </ul>
                                 <div className="tab-content">
                                     <div
@@ -211,36 +201,6 @@ const ProductDetail = () => {
                                         id="tabs-3"
                                         role="tabpanel"
                                     >
-                                        <div className="product__details__tab__desc">
-                                            <h6>Products Infomation</h6>
-                                            <p>
-                                                Vestibulum ac diam sit amet quam
-                                                vehicula elementum sed sit amet
-                                                dui. Pellentesque in ipsum id
-                                                orci porta dapibus. Proin eget
-                                                tortor risus. Vivamus suscipit
-                                                tortor eget felis porttitor
-                                                volutpat. Vestibulum ac diam sit
-                                                amet quam vehicula elementum sed
-                                                sit amet dui. Donec rutrum
-                                                congue leo eget malesuada.
-                                                Vivamus suscipit tortor eget
-                                                felis porttitor volutpat.
-                                                Curabitur arcu erat, accumsan id
-                                                imperdiet et, porttitor at sem.
-                                                Praesent sapien massa, convallis
-                                                a pellentesque nec, egestas non
-                                                nisi. Vestibulum ac diam sit
-                                                amet quam vehicula elementum sed
-                                                sit amet dui. Vestibulum ante
-                                                ipsum primis in faucibus orci
-                                                luctus et ultrices posuere
-                                                cubilia Curae; Donec velit
-                                                neque, auctor sit amet aliquam
-                                                vel, ullamcorper sit amet
-                                                ligula. Proin eget tortor risus.
-                                            </p>
-                                        </div>
                                     </div>
                                 </div>
                             </div>

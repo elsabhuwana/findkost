@@ -627,6 +627,7 @@ ol {
   border: 1px solid #ebebeb;
   position: relative;
   float: left;
+
 }
 
 .hero__search__form form .hero__search__categories {
@@ -1651,11 +1652,13 @@ ol {
 .product__details__text .product__details__rating {
   font-size: 14px;
   margin-bottom: 12px;
+  display: none;
 }
 
 .product__details__text .product__details__rating i {
   margin-right: -2px;
   color: #EDBB0E;
+  display: none;
 }
 
 .product__details__text .product__details__rating span {
@@ -3446,6 +3449,7 @@ ol {
   }
   .shoping__cart__btns {
     text-align: center;
+    display: none;
   }
   .primary-btn.cart-btn.cart-btn-right {
     float: none;

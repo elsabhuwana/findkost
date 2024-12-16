@@ -16,14 +16,4 @@
         @endforeach
     </ul>
     </div>
-    <div class="sidebar__item">
-    <h4>Tags</h4>
-    @foreach($menu_tags as $menu_tag)
-    <div class="sidebar__item__size">
-        <label for="large">
-        <a href="{{ route('shop.tag', $menu_tag->slug) }}">{{ $menu_tag->name }}</a>
-        </label>
-    </div>
-    @endforeach
-    </div>
 </div>

@@ -37,11 +37,11 @@
                         <input type="number" name="price" value="{{ old('price') }}" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label for="quantity">quantity</label>
+                        <label for="quantity">Width</label>
                         <input type="number" name="quantity" value="{{ old('quantity') }}" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label for="weight">weight</label>
+                        <label for="weight">Height</label>
                         <input type="number" name="weight" value="{{ old('weight') }}" class="form-control">
                     </div>
                     <div class="form-group">

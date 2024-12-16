@@ -130,19 +130,17 @@ const ProductShop = () => {
                                     >
                                         <ul className="product__item__pic__hover">
                                             <li>
-                                                <a href="#">
-                                                    <i className="fa fa-heart"></i>
-                                                </a>
+                
                                             </li>
                                             <li>
-                                                <a
+                                                {/* <a
                                                     href="#"
                                                     onClick={(e) =>
                                                         addToCart(e, product.id)
                                                     }
                                                 >
                                                     <i className="fa fa-shopping-cart"></i>
-                                                </a>
+                                                </a> */}
                                             </li>
                                         </ul>
                                     </div>

@@ -73,7 +73,7 @@ const Cart = () => {
                                     <h5>{cart.name}</h5>
                                 </td>
                                 <td className="shoping__cart__price">
-                                    ${cart.price}
+                                    Rp{cart.price}
                                 </td>
                                 <td className="shoping__cart__quantity">
                                     <div className="quantity">
@@ -109,7 +109,7 @@ const Cart = () => {
                                     </div>
                                 </td>
                                 <td className="shoping__cart__total">
-                                    ${cart.price * cart.quantity}
+                                    Rp{cart.price * cart.quantity}
                                 </td>
                                 <td className="shoping__cart__item__close">
                                     <span
@@ -151,14 +151,14 @@ const Cart = () => {
                 <div className="col-lg-12">
                     <div className="shoping__cart__btns">
                         <a href="#" className="primary-btn cart-btn">
-                            CONTINUE SHOPPING
+                            
                         </a>
                         <a
                             href="#"
                             className="primary-btn cart-btn cart-btn-right"
                         >
-                            <span className="icon_loading"></span>
-                            Upadate Cart
+                            <span className=""></span>
+                           
                         </a>
                     </div>
                 </div>
@@ -183,10 +183,10 @@ const Cart = () => {
                         <h5>Cart Total</h5>
                         <ul>
                             <li>
-                                Subtotal <span>${total}</span>
+                                Subtotal <span>Rp{total}</span>
                             </li>
                             <li>
-                                Total <span>${total}</span>
+                                Total <span>Rp{total}</span>
                             </li>
                         </ul>
                         <form action="/checkout" method="POST">

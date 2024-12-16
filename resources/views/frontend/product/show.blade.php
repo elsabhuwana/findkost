@@ -1,7 +1,6 @@
 @extends('layouts.frontend')
 
 @section('content')
-    <!-- Breadcrumb Section Begin -->
     <section class="breadcrumb-section set-bg" data-setbg="{{ asset('frontend/img/breadcrumb.jpg') }}">
       <div class="container">
         <div class="row">
@@ -16,15 +15,9 @@
         </div>
       </div>
     </section>
-    <!-- Breadcrumb Section End -->
-
-    <!-- Product Details Section Begin -->
     <section class="product-details spad" id="product-detail">
-     
     </section>
-    <!-- Product Details Section End -->
 
-    <!-- Related Product Section Begin -->
     <section class="related-product">
       <div class="container">
         <div class="row">
@@ -43,9 +36,7 @@
                 data-setbg="{{ $related_product->gallery->first()->getUrl() }}"
               >
                 <ul class="product__item__pic__hover">
-                  <li>
-                    <a href="#"><i class="fa fa-heart"></i></a>
-                  </li>
+                  
                   <li>
                     <a href="#"><i class="fa fa-shopping-cart"></i></a>
                   </li>
@@ -53,7 +44,7 @@
               </div>
               <div class="product__item__text">
                 <h6><a href="">{{ $related_product->name }}</a></h6>
-                <h5>${{ $related_product->price }}</h5>
+                <h5>Rp.{{ $related_product->price }}</h5>
               </div>
             </div>
           </div>

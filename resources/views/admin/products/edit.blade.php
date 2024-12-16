@@ -3,7 +3,7 @@
 @section('content')
         <div class="card">
             <div class="card-header">
-                <h3>Edit product
+                <h3>Edit Room
                     <a href="{{ route('admin.products.index') }}" class="btn btn-primary float-right">
                         Go Back
                     </a>
@@ -38,12 +38,12 @@
                         <input type="number" name="price" value="{{ old('price', $product->price) }}" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label for="quantity">quantity</label>
-                        <input type="number" name="quantity" value="{{ old('quantity', $product->quantity) }}" class="form-control">
+                        <label for="quantity">Width</label>
+                        <input type="number" name="quantity" value="{{ old('quantity') }}" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label for="weight">weight</label>
-                        <input type="number" name="weight" value="{{ old('weight', $product->weight) }}" class="form-control">
+                        <label for="weight">Height</label>
+                        <input type="number" name="weight" value="{{ old('weight') }}" class="form-control">
                     </div>
                     <div class="form-group">
                         <label for="description">description</label>

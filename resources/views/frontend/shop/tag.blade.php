@@ -18,9 +18,7 @@
         </div>
       </div>
     </section>
-    <!-- Breadcrumb Section End -->
-
-    <!-- Product Section Begin -->
+    
     <section class="product spad">
       <div class="container">
         <div class="row">
@@ -33,5 +31,4 @@
         </div>
       </div>
     </section>
-    <!-- Product Section End -->
 @endsection

@@ -48,11 +48,7 @@ const ProductList = () => {
                                     }}
                                 >
                                     <ul className="featured__item__pic__hover">
-                                        <li>
-                                            <a href="#">
-                                                <i className="fa fa-heart"></i>
-                                            </a>
-                                        </li>
+                                     
                                         <li>
                                             <a
                                                 href="#"
@@ -71,7 +67,7 @@ const ProductList = () => {
                                             {product.name}
                                         </a>
                                     </h6>
-                                    <h5>${product.price}</h5>
+                                    <h5>Rp{product.price}</h5>
                                 </div>
                             </div>
                         </div>

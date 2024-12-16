@@ -3,84 +3,67 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth; // Import Auth facade
-use Midtrans\Config;
-use Midtrans\Snap;
-use Midtrans\Transaction;
+use Illuminate\Support\Facades\Auth;
 use Darryldecode\Cart\Facades\CartFacade as Cart;
 
 class CheckoutController extends Controller
 {
-    public function index(Request $request)
-    {
-        // Konfigurasi Midtrans
-        Config::$serverKey = config('midtrans.serverKey');
-        Config::$isProduction = false; // Ubah ke true jika sudah di produksi
-        Config::$isSanitized = true;
-        Config::$is3ds = true;
 
-        // Ambil data dari cart
-        $cartItems = Cart::getContent();
-        $grossAmount = Cart::getTotal();
-
-        // Cek apakah keranjang kosong
-        if ($cartItems->isEmpty()) {
-            return redirect()->route('cart.index')->with('error', 'Keranjang kosong.');
-        }
-
-        // Siapkan parameter untuk transaksi
-        $params = array (
-            'transaction_details' => array (
-                'order_id' => 'order_' . time(), // Unique order ID
-                'gross_amount' => $grossAmount, // Total dari keranjang
-            ),
-            'customer_details' => array (
-                'first_name' => Auth::user()->name,
-                'email' => Auth::user()->email, // Gunakan email pengguna
-                'phone' => Auth::user()->phone, // Pastikan Anda memiliki field telepon
-            ),
-        );
-
-        // Ambil Snap token
-        try {
-            $snapToken = Snap::getSnapToken($params); // Retrieve Snap token
-            return response()->json(['snapToken' => $snapToken]); // Kembalikan Snap token
-        } catch (\Exception $e) {
-            Log::error('Gagal mendapatkan Snap token: ' . $e->getMessage());
-            return response()->json(['error' => 'Gagal mendapatkan Snap token'], 500);
-        }
+    public function index()
+{
+    // Pastikan pelanggan sudah login
+    if (!Auth::check()) {
+        return redirect()->route('login')->with('error', 'Please login first.');
     }
 
-    public function checkTransactionStatus($orderId)
-    {
-        try {
-            // Ambil status transaksi dari Midtrans
-            $status = Transaction::status($orderId);
+    // Ambil data keranjang belanja
+    $cartItems = Cart::getContent();
+    $grossAmount = Cart::getTotal();
 
-            // Log status transaksi untuk debugging
-            Log::info('Status Transaksi untuk Order ID ' . $orderId . ': ' . json_encode($status));
-
-            // Tampilkan status transaksi
-            return response()->json($status);
-        } catch (\Exception $e) {
-            Log::error('Gagal memeriksa status transaksi: ' . $e->getMessage());
-            return response()->json(['error' => 'Gagal memeriksa status transaksi'], 500);
-        }
+    // Jika keranjang kosong, arahkan ke halaman keranjang
+    if ($cartItems->isEmpty()) {
+        return redirect()->route('cart.index')->with('error', 'Your cart is empty.');
     }
 
-    public function paymentSuccess()
-    {
-        return view('checkout.success'); // Halaman sukses
+    // Return halaman checkout
+    return view('frontend.order.checkout', compact('cartItems', 'grossAmount'));
+}
+
+public function processCheckout(Request $request)
+{
+    // Pastikan user sudah login
+    if (!Auth::check()) {
+        return redirect()->route('login')->with('error', 'Please login to continue.');
     }
 
-    public function paymentPending()
-    {
-        return view('checkout.pending'); // Halaman pending
+    // Ambil data pelanggan yang sudah login
+    $user = Auth::user();
+
+    // Ambil detail pesanan dari keranjang
+    $cartItems = Cart::getContent();
+    $grossAmount = Cart::getTotal();
+
+    // Jika keranjang kosong, arahkan kembali ke halaman keranjang
+    if ($cartItems->isEmpty()) {
+        return redirect()->route('cart.index')->with('error', 'Your cart is empty.');
     }
 
-    public function paymentFailed()
-    {
-        return view('checkout.failed'); // Halaman gagal
+    // Nomor WhatsApp Admin (gunakan format internasional)
+    $adminPhone = '6281231638570'; // Ganti dengan nomor WhatsApp admin
+
+    // Buat pesan WhatsApp dengan memasukkan data pengguna yang sudah login
+    $message = "Halo Admin, saya ingin memesan kamar kost dengan detail sebagai berikut: ";
+    $message .= "\n\nPesanan: ";
+    foreach ($cartItems as $item) {
+        $message .= "- {$item->name} (x{$item->quantity}): Rp" . number_format($item->price, 0, ',', '.') . "\n";
     }
+    $message .= "\nTotal Harga: Rp" . number_format($grossAmount, 0, ',', '.');
+
+    // URL WhatsApp (gunakan format yang benar untuk mengarahkan ke chat admin)
+    $whatsappUrl = "https://wa.me/{$adminPhone}?text=" . urlencode($message);
+
+    // Redirect pelanggan ke WhatsApp dengan pesan yang sudah terisi otomatis
+    return redirect()->away($whatsappUrl);
+}
+
 }
